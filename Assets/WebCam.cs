@@ -22,27 +22,17 @@ public class WebCam : MonoBehaviour
         this.webCamTexture = new WebCamTexture(INPUT_SIZE, INPUT_SIZE, FPS);
         this.rawImage.texture = this.webCamTexture;
         this.webCamTexture.Play();
+        Invoke(nameof(ScreenShot), 10f);
     }
-    void TakeShot()
+
+    void ScreenShot()
     {
-        Texture tex = this.rawImage.texture;
-        int w = tex.width;
-        int h = tex.height;
-
-        RenderTexture currentRT = RenderTexture.active;
-        RenderTexture rt = new RenderTexture(w, h, 32);
-
-        Graphics.Blit(tex, rt);
-        RenderTexture.active = rt;
-
-        Texture2D result = new Texture2D(w, h, TextureFormat.RGBA32, false);
-        result.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
-        result.Apply();
-        RenderTexture.active = currentRT;
-
-        GetComponent<MeshRenderer>().material.mainTexture = result;
+        CaptureScreenShot("ScreenShot.png");
     }
 
-
+    private void CaptureScreenShot(string filePath)
+    {
+        ScreenCapture.CaptureScreenshot(filePath);
+    }
 
 }
